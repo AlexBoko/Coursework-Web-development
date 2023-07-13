@@ -1,48 +1,39 @@
 package com.example.auction.model;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 
 @Entity
-@Table(name = "lots")
+@Table(name = "lot")
 public class Lot {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
-    @Column(nullable = false)
+    @Column(name = "title")
     private String title;
 
-    @Column(nullable = false)
+    @Column(name = "description")
     private String description;
 
-    @Column(nullable = false)
-    private int startPrice;
+    @Column(name = "start_price")
+    private BigDecimal startPrice;
 
-    @Column(nullable = false)
-    private int bidPrice;
+    @Column(name = "bid_price")
+    private BigDecimal bidPrice;
 
-    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private LotStatus status;
+    @Column(name = "status")
+    private Status status;
 
-    @Column(nullable = false)
-    private String category;
-
-    @Column(nullable = false)
-    private Long bidId;
-
-    public Lot(String title, String description, int startPrice) {
-        this.title = title;
-        this.description = description;
-        this.startPrice = startPrice;
-    }
+    @Column(name = "bidder_id")
+    private Long bidderId;
 
     public Lot() {
-
     }
 
-    // Конструкторы, геттеры и сеттеры
+// Геттеры и сеттеры для полей класса
 
     public Long getId() {
         return id;
@@ -68,43 +59,36 @@ public class Lot {
         this.description = description;
     }
 
-    public int getStartPrice() {
+    public BigDecimal getStartPrice() {
         return startPrice;
     }
 
-    public void setStartPrice(int startPrice) {
+    public void setStartPrice(BigDecimal startPrice) {
         this.startPrice = startPrice;
     }
 
-    public int getBidPrice() {
+    public BigDecimal getBidPrice() {
         return bidPrice;
     }
 
-    public void setBidPrice(int bidPrice) {
+    public void setBidPrice(BigDecimal bidPrice) {
         this.bidPrice = bidPrice;
     }
 
-    public LotStatus getStatus() {
+    public Status getStatus() {
         return status;
     }
 
-    public void setStatus(LotStatus status) {
+    public void setStatus(Status status) {
         this.status = status;
     }
 
-    public String getCategory() {
-        return category;
+    public Long getBidderId() {
+        return bidderId;
     }
 
-    public void setCategory(String category) {
-        this.category = category;
+    public void setBidderId(Long bidderId) {
+        this.bidderId = bidderId;
     }
 
-    public Long getBidId() {
-        return bidId;
-    }
-
-    public void setBidId(Long bidId) {
-        this.bidId = bidId;
-    }
 }

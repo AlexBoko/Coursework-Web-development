@@ -1,7 +1,7 @@
 package com.example.auction.util;
 
 import com.example.auction.dto.BidDTO;
-import com.example.auction.dto.FullLotDTO;
+import com.example.auction.dto.FullLot;
 import com.opencsv.CSVWriter;
 
 import java.io.ByteArrayOutputStream;
@@ -12,7 +12,7 @@ import java.util.List;
 public class CSVUtil {
     private static final char DEFAULT_SEPARATOR = ',';
 
-    public static byte[] convertFullLotDTOToCSV(FullLotDTO fullLotDTO) {
+    public static byte[] convertFullLotDTOToCSV(FullLot fullLotDTO) {
         try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
              CSVWriter csvWriter = new CSVWriter(new OutputStreamWriter(outputStream))) {
 

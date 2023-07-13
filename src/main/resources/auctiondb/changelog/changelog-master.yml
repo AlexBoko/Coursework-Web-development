@@ -3,3 +3,4 @@ databaseChangeLog:
       file: auctiondb/changelog/01-create-bids-table.yml
   - include:
       file: auctiondb/changelog/02-create-lots-table.yml
+

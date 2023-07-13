@@ -1,24 +1,26 @@
 package com.example.auction.dto;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Positive;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-public class CreateLotDTO {
+public class CreateLot {
 
-    @NotBlank
-    @Size(min = 3, max = 64)
+    @NotBlank(message = "Title is required")
+    @Size(min = 3, max = 64, message = "Title must be between 3 and 64 characters")
     private String title;
 
-    @NotBlank
-    @Size(min = 1, max = 4096)
+    @NotBlank(message = "Description is required")
+    @Size(min = 1, max = 4096, message = "Description must be between 1 and 4096 characters")
     private String description;
 
-    @Positive
-    private int startPrice;
+    @NotNull
+    @Size(min = 1, max = 100)
+    private Integer startPrice;
 
-    @Positive
-    private int bidPrice;
+    @NotNull
+    @Size(min = 1, max = 100)
+    private Integer bidPrice;
 
     public String getTitle() {
         return title;
@@ -50,5 +52,9 @@ public class CreateLotDTO {
 
     public void setBidPrice(int bidPrice) {
         this.bidPrice = bidPrice;
+    }
+
+    public String getCategory() {
+        return null;
     }
 }

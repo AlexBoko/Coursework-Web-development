@@ -19,12 +19,11 @@ public class Bid {
     private LocalDateTime bidDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "lot_id", nullable = false)
+    @JoinColumn(name = "lot_id")
     private Lot lot;
 
-    @Column(nullable = false, columnDefinition = "numeric(19, 2)")
+    @Column(nullable = false, precision = 19, scale = 2)
     private BigDecimal amount;
-
 
     public Bid(String bidderName, LocalDateTime bidDate, Lot lot, BigDecimal amount) {
         this.bidderName = bidderName;

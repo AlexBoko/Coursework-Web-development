@@ -6,8 +6,12 @@ public class BidDTO {
 
     private String bidderName;
     private LocalDateTime bidDate;
+    private Object amount;
 
     public BidDTO(String bidderName, LocalDateTime bidDate, Object amount) {
+        this.bidderName = bidderName;
+        this.bidDate = bidDate;
+        this.amount = amount;
     }
 
     public String getBidderName() {
@@ -27,6 +31,10 @@ public class BidDTO {
     }
 
     public Object getAmount() {
-        return null;
+        return amount;
+    }
+
+    public void setAmount(Object amount) {
+        this.amount = amount;
     }
 }

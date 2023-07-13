@@ -18,10 +18,12 @@ public interface BidRepository extends JpaRepository<Bid, Long> {
     @Query("SELECT SUM(b.amount) FROM Bid b WHERE b.lot.id = :lotId")
     long sumAmountByLotId(@Param("lotId") Long lotId);
 
-    String findMostFrequentBidderNameByLotId(Long lotId);
+    @Query("SELECT b.bidderName FROM Bid b WHERE b.lot.id = :lotId GROUP BY b.bidderName ORDER BY COUNT(b.bidderName) DESC")
+    String findMostFrequentBidderNameByLotId(@Param("lotId") Long lotId);
 
-    Optional<Bid> findFirstByLotIdAndBidderName(Long lotId, String mostFrequentBidderName);
+    Optional<Bid> findFirstByLotIdAndBidderName(Long lotId, String bidderName);
 
     List<Bid> findByLotId(Long lotId);
 
+    List<Bid> findByLotIdOrderByBidDateDesc(Integer id);
 }
