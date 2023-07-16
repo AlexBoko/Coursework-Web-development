@@ -10,6 +10,7 @@ import com.example.auction.model.Lot;
 import com.example.auction.model.Status;
 import com.example.auction.repository.BidRepository;
 import com.example.auction.repository.LotRepository;
+import com.example.auction.util.CsvExporter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -23,7 +24,7 @@ import java.util.Optional;
 
 @Service
 @Transactional
-public  class LotServiceImpl implements LotService {
+public class LotServiceImpl implements LotService {
 
     private final LotRepository lotRepository;
     private final BidRepository bidRepository;
@@ -39,8 +40,8 @@ public  class LotServiceImpl implements LotService {
         Lot lot = new Lot();
         lot.setTitle(lotRequest.getTitle());
         lot.setDescription(lotRequest.getDescription());
-        lot.setStartPrice(BigDecimal.valueOf(lotRequest.getStartPrice()));
-        lot.setBidPrice(BigDecimal.valueOf(lotRequest.getBidPrice()));
+        lot.setStartPrice(lotRequest.getStartPrice());
+        lot.setBidPrice(lotRequest.getBidPrice());
         lot.setStatus(Status.CREATED);
         return lotRepository.save(lot);
     }
@@ -109,17 +110,19 @@ public  class LotServiceImpl implements LotService {
     }
 
     @Override
-    public void startBidding(Long lotId) {
+    public boolean startBidding(Long lotId) {
         Lot lot = getLotById(lotId);
         lot.setStatus(Status.STARTED);
         lotRepository.save(lot);
+        return true;
     }
 
     @Override
-    public void stopBidding(Long lotId) {
+    public boolean stopBidding(Long lotId) {
         Lot lot = getLotById(lotId);
         lot.setStatus(Status.STOPPED);
         lotRepository.save(lot);
+        return true;
     }
 
     @Override
@@ -138,9 +141,10 @@ public  class LotServiceImpl implements LotService {
     }
 
     @Override
-    public void deleteLot(Long id) {
+    public boolean deleteLot(Long id) {
         Lot lot = getLotById(id);
         lotRepository.delete(lot);
+        return true;
     }
 
     @Override
@@ -150,21 +154,51 @@ public  class LotServiceImpl implements LotService {
 
     @Override
     public List<LotDTO> getAllLotsByStatusFilterAndPageNumber(Status status, Integer page) {
-        return null;
+        List<Lot> lots = findLotsByStatusAndPage(status.toString(), page);
+        List<LotDTO> lotDTOs = new ArrayList<>();
+
+        for (Lot lot : lots) {
+            LotDTO lotDTO = new LotDTO(
+                    lot.getId(),
+                    lot.getTitle(),
+                    lot.getStatus()
+            );
+            lotDTOs.add(lotDTO);
+        }
+
+        return lotDTOs;
     }
 
     @Override
     public byte[] exportAllLotsToCSVFile() {
-        return new byte[0];
+        List<Lot> lots = getAllLots();
+        String csvData = CsvExporter.exportLotsToCsv(lots);
+        return csvData.getBytes();
     }
 
     @Override
     public FullLot getFullInformation(Integer id) {
+        Long lotId = id.longValue();
+        return getFullLotById(lotId);
+    }
+
+    @Override
+    public FullLot getFullInformation(Long lotId) {
+        return null;
+    }
+
+    @Override
+    public Bid getMostFrequentBidder(Long lotId) {
         return null;
     }
 
     public Lot getLotById(Long lotId) {
         Optional<Lot> lotOptional = lotRepository.findById(lotId);
         return lotOptional.orElseThrow(() -> new NotFoundException("Lot not found"));
+    }
+
+    @Override
+    public boolean createBid(Long lotId, String bidderName, BigDecimal amount) {
+        return false;
     }
 }

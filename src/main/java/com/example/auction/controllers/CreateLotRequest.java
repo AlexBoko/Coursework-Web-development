@@ -50,3 +50,5 @@ public class CreateLotRequest {
         this.bidPrice = bidPrice;
     }
 }
+
+

@@ -6,3 +6,4 @@ public class InvalidStatusException extends RuntimeException {
         super(message);
     }
 }
+

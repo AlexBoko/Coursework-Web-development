@@ -3,10 +3,12 @@ package com.example.auction.service;
 import com.example.auction.dto.CreateLot;
 import com.example.auction.dto.FullLot;
 import com.example.auction.dto.LotDTO;
+import com.example.auction.model.Bid;
 import com.example.auction.model.Lot;
 import com.example.auction.model.Status;
 
 import javax.validation.Valid;
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface LotService {
@@ -22,17 +24,15 @@ public interface LotService {
 
     void stopBidding(Integer lotId);
 
-    void startBidding(Long lotId);
+    boolean startBidding(Long lotId);
 
-    void stopBidding(Long lotId);
+    boolean stopBidding(Long lotId);
 
     List<Lot> getAllLots();
 
-    Lot getLotById(Long id);
-
     Lot updateLot(Long id, Lot lot);
 
-    void deleteLot(Long id);
+    boolean deleteLot(Long id);
 
     List<Lot> getLotsByStatus(String status, int limit);
 
@@ -41,4 +41,12 @@ public interface LotService {
     byte[] exportAllLotsToCSVFile();
 
     FullLot getFullInformation(Integer id);
+
+    FullLot getFullInformation(Long lotId);
+
+    Bid getMostFrequentBidder(Long lotId);
+
+    Lot getLotById(Long lotId);
+
+    boolean createBid(Long lotId, String bidderName, BigDecimal amount);
 }

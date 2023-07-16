@@ -38,3 +38,4 @@ public class FullLot extends LotDTO {
     }
 
 }
+

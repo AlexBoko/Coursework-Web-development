@@ -15,7 +15,7 @@ public class LotDTO {
     private String lastBidder;
     private BigDecimal currentPrice;
 
-    public LotDTO(Long id, String title, String description, int startPrice, Status status) {
+    public LotDTO(Long id, String title, Status status) {
     }
 
     public LotDTO(Long id, String title, String description, BigDecimal startPrice, Status status) {

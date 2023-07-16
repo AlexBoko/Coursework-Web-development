@@ -1,15 +1,15 @@
 package com.example.auction.controllers;
 
-import com.example.auction.dto.BidDTO;
 import com.example.auction.dto.CreateLot;
 import com.example.auction.dto.FullLot;
 import com.example.auction.dto.LotDTO;
+import com.example.auction.model.Bid;
 import com.example.auction.model.Lot;
 import com.example.auction.model.Status;
-import com.example.auction.service.BidService;
 import com.example.auction.service.LotService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,73 +19,105 @@ import java.util.List;
 @RestController
 @RequestMapping("/lots")
 public class LotController {
-    private final BidService bidService;
-
     private final LotService lotService;
 
-    public LotController(BidService bidService, LotService lotService) {
-        this.bidService = bidService;
+    @Autowired
+    public LotController(LotService lotService) {
         this.lotService = lotService;
     }
 
-
     @GetMapping("/{id}/first")
-    public BidDTO getInformationAboutTheFirstBidder(@PathVariable Integer id) {
-        return bidService.getInformationAboutTheFirstBidder(id);
+    public ResponseEntity<Lot> getFirstBidder(@PathVariable("id") Long lotId) {
+        Lot firstBidder = lotService.getLotById(lotId);
+        if (firstBidder != null) {
+            return ResponseEntity.ok(firstBidder);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @GetMapping("/{id}/frequent")
-    public BidDTO returnsTheNameOfThePersonWhoBetOnThisLotTheMostNumberOfTimes(@PathVariable Integer id) {
-        return bidService.returnsTheNameOfThePersonWhoBetOnThisLotTheMostNumberOfTimes(id);
-    }
-
-    @GetMapping("/{id}")
-    public FullLot getFullInformation(@PathVariable Integer id) {
-        return lotService.getFullInformation(id);
+    public ResponseEntity<Bid> getMostFrequentBidder(@PathVariable("id") Long lotId) {
+        Bid mostFrequentBidder = lotService.getMostFrequentBidder(lotId);
+        if (mostFrequentBidder != null) {
+            return ResponseEntity.ok(mostFrequentBidder);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PostMapping("/{id}/start")
-    public void startBidding(@PathVariable Integer id) {
-        lotService.startBidding(id);
+    public ResponseEntity<Void> startBidding(@PathVariable("id") Long lotId) {
+        boolean started = lotService.startBidding(lotId);
+        if (started) {
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PostMapping("/{id}/stop")
-    public void stopBidding(@PathVariable Integer id) {
-        lotService.stopBidding(id);
+    public ResponseEntity<Void> stopBidding(@PathVariable("id") Long lotId) {
+        boolean stopped = lotService.stopBidding(lotId);
+        if (stopped) {
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
-
-    @PostMapping("/{id}/bid")
-    public void placeBet(@PathVariable Integer id, @RequestBody @Valid BidDTO bidDTO) {
-        bidService.placeBet(id, bidDTO);
+    @PostMapping("/{lotId}/bids")
+    public ResponseEntity<Void> createBid(@PathVariable("lotId") Long lotId, @RequestBody @Valid CreateBid createBid) {
+        boolean created = lotService.createBid(lotId, createBid.getBidderName(), createBid.getAmount());
+        if (created) {
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
-
-
-    @PostMapping
-    public Lot createNewLot(@RequestBody @Valid CreateLot createLot) {
-        return lotService.createLot(createLot);
-    }
-
     @GetMapping
-    public List<LotDTO> getAllLotsByStatusFilterAndPageNumber(@RequestParam(value = "status", required = false) Status status,
-                                                              @RequestParam(value = "page", required = false, defaultValue = "0") Integer page) {
-        return lotService.getAllLotsByStatusFilterAndPageNumber(status, page);
+    public ResponseEntity<List<LotDTO>> getAllLotsByStatusFilterAndPageNumber(
+            @RequestParam(value = "status", required = false) String status,
+            @RequestParam(value = "page", defaultValue = "0") int page) {
+        List<LotDTO> lots = lotService.getAllLotsByStatusFilterAndPageNumber(Status.valueOf(status), page);
+        return ResponseEntity.ok(lots);
     }
 
-
-    @DeleteMapping("/{id}")
-    public void deleteLot(@PathVariable("id") Long id) {
-        lotService.deleteLot(id);
-    }
-
-    @GetMapping("/status/{status}")
-    public List<Lot> getLotsByStatus(@PathVariable("status") String status, @RequestParam("limit") int limit) {
-        return lotService.getLotsByStatus(status, limit);
-    }
     @GetMapping("/export")
     public ResponseEntity<byte[]> exportAllLotsToCSVFile() {
-        byte [] result = lotService.exportAllLotsToCSVFile();
-        return ResponseEntity.status(HttpStatus.OK)
-                .header(HttpHeaders.CONTENT_TYPE, "text/cvs")
-                .body(result);
+        byte[] csvFile = lotService.exportAllLotsToCSVFile();
+        if (csvFile != null) {
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=lots.csv")
+                    .contentType(MediaType.parseMediaType("text/csv"))
+                    .body(csvFile);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<FullLot> getFullInformation(@PathVariable("id") Long lotId) {
+        FullLot fullLot = lotService.getFullInformation(lotId);
+        if (fullLot != null) {
+            return ResponseEntity.ok(fullLot);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PostMapping
+    public ResponseEntity<Lot> createLot(@RequestBody @Valid CreateLot createLot) {
+        Lot lot = lotService.createLot(createLot);
+        return ResponseEntity.ok(lot);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteLot(@PathVariable("id") Long lotId) {
+        boolean deleted = lotService.deleteLot(lotId);
+        if (deleted) {
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 }

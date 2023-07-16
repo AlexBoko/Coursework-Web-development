@@ -44,3 +44,4 @@ public class BidServiceImpl extends BidService {
         bidRepository.save(bid);
     }
 }
+

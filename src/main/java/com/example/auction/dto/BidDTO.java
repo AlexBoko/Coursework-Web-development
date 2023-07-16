@@ -38,3 +38,4 @@ public class BidDTO {
         this.amount = amount;
     }
 }
+

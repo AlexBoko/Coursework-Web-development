@@ -3,6 +3,7 @@ package com.example.auction.dto;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.math.BigDecimal;
 
 public class CreateLot {
 
@@ -15,12 +16,10 @@ public class CreateLot {
     private String description;
 
     @NotNull
-    @Size(min = 1, max = 100)
-    private Integer startPrice;
+    private BigDecimal startPrice;
 
     @NotNull
-    @Size(min = 1, max = 100)
-    private Integer bidPrice;
+    private BigDecimal bidPrice;
 
     public String getTitle() {
         return title;
@@ -38,23 +37,19 @@ public class CreateLot {
         this.description = description;
     }
 
-    public int getStartPrice() {
+    public BigDecimal getStartPrice() {
         return startPrice;
     }
 
-    public void setStartPrice(int startPrice) {
+    public void setStartPrice(BigDecimal startPrice) {
         this.startPrice = startPrice;
     }
 
-    public int getBidPrice() {
+    public BigDecimal getBidPrice() {
         return bidPrice;
     }
 
-    public void setBidPrice(int bidPrice) {
+    public void setBidPrice(BigDecimal bidPrice) {
         this.bidPrice = bidPrice;
-    }
-
-    public String getCategory() {
-        return null;
     }
 }
