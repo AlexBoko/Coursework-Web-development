@@ -65,15 +65,9 @@ public class LotController {
             return ResponseEntity.notFound().build();
         }
     }
-    @PostMapping("/{lotId}/bids")
-    public ResponseEntity<Void> createBid(@PathVariable("lotId") Long lotId, @RequestBody @Valid CreateBid createBid) {
-        boolean created = lotService.createBid(lotId, createBid.getBidderName(), createBid.getAmount());
-        if (created) {
-            return ResponseEntity.ok().build();
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
+
+
+
     @GetMapping
     public ResponseEntity<List<LotDTO>> getAllLotsByStatusFilterAndPageNumber(
             @RequestParam(value = "status", required = false) String status,

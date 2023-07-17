@@ -2,6 +2,7 @@ package com.example.auction.model;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.Collection;
 
 @Entity
 @Table(name = "lot")
@@ -91,4 +92,7 @@ public class Lot {
         this.bidderId = bidderId;
     }
 
+    public Collection<Object> getBids() {
+        return null;
+    }
 }

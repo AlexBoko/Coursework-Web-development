@@ -52,4 +52,12 @@ public class CreateLot {
     public void setBidPrice(BigDecimal bidPrice) {
         this.bidPrice = bidPrice;
     }
+
+    public String getBidderName() {
+        return null;
+    }
+
+    public BigDecimal getAmount() {
+        return null;
+    }
 }

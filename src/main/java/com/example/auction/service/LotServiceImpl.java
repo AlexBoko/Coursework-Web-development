@@ -10,7 +10,6 @@ import com.example.auction.model.Lot;
 import com.example.auction.model.Status;
 import com.example.auction.repository.BidRepository;
 import com.example.auction.repository.LotRepository;
-import com.example.auction.util.CsvExporter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -55,7 +54,8 @@ public class LotServiceImpl implements LotService {
 
     @Override
     public FullLot getFullLotById(Integer lotId) {
-        return null;
+        Long longLotId = lotId.longValue();
+        return getFullLotById(longLotId);
     }
 
     @Override
@@ -101,12 +101,14 @@ public class LotServiceImpl implements LotService {
 
     @Override
     public void startBidding(Integer lotId) {
-
+        Long longLotId = lotId.longValue();
+        startBidding(longLotId);
     }
 
     @Override
     public void stopBidding(Integer lotId) {
-
+        Long longLotId = lotId.longValue();
+        stopBidding(longLotId);
     }
 
     @Override
@@ -171,9 +173,7 @@ public class LotServiceImpl implements LotService {
 
     @Override
     public byte[] exportAllLotsToCSVFile() {
-        List<Lot> lots = getAllLots();
-        String csvData = CsvExporter.exportLotsToCsv(lots);
-        return csvData.getBytes();
+        throw new UnsupportedOperationException("Exporting lots to CSV file is not supported yet");
     }
 
     @Override
@@ -184,14 +184,15 @@ public class LotServiceImpl implements LotService {
 
     @Override
     public FullLot getFullInformation(Long lotId) {
-        return null;
+        throw new UnsupportedOperationException("Getting full information by lot ID is not supported yet");
     }
 
     @Override
     public Bid getMostFrequentBidder(Long lotId) {
-        return null;
+        throw new UnsupportedOperationException("Getting most frequent bidder is not supported yet");
     }
 
+    @Override
     public Lot getLotById(Long lotId) {
         Optional<Lot> lotOptional = lotRepository.findById(lotId);
         return lotOptional.orElseThrow(() -> new NotFoundException("Lot not found"));
@@ -199,6 +200,24 @@ public class LotServiceImpl implements LotService {
 
     @Override
     public boolean createBid(Long lotId, String bidderName, BigDecimal amount) {
-        return false;
+        Lot lot = getLotById(lotId);
+        if (lot.getStatus() != Status.STARTED) {
+            throw new IllegalStateException("Bidding is not currently active for this lot");
+        }
+
+        BigDecimal currentPrice = lot.getStartPrice().add(
+                BigDecimal.valueOf(lot.getBids().size()).multiply(lot.getBidPrice())
+        );
+        if (amount.compareTo(currentPrice) <= 0) {
+            throw new IllegalArgumentException("Bid amount must be greater than the current price");
+        }
+
+        Bid bid = new Bid();
+        bid.setLot(lot);
+        bid.setBidderName(bidderName);
+        bid.setAmount(amount);
+        bidRepository.save(bid);
+
+        return true;
     }
 }
