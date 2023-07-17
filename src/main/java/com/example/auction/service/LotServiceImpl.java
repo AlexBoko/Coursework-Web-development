@@ -10,13 +10,18 @@ import com.example.auction.model.Lot;
 import com.example.auction.model.Status;
 import com.example.auction.repository.BidRepository;
 import com.example.auction.repository.LotRepository;
+import com.opencsv.CSVWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.Valid;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -54,9 +59,9 @@ public class LotServiceImpl implements LotService {
 
     @Override
     public FullLot getFullLotById(Integer lotId) {
-        Long longLotId = lotId.longValue();
-        return getFullLotById(longLotId);
+        return null;
     }
+
 
     @Override
     public FullLot getFullLotById(Long lotId) {
@@ -173,7 +178,31 @@ public class LotServiceImpl implements LotService {
 
     @Override
     public byte[] exportAllLotsToCSVFile() {
-        throw new UnsupportedOperationException("Exporting lots to CSV file is not supported yet");
+        List<LotDTO> lotDTOs = getAllLotsAsDTO(); // Метод, который получает список всех лотов в виде LotDTO
+
+        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+             CSVWriter writer = new CSVWriter(new OutputStreamWriter(outputStream, StandardCharsets.UTF_8))) {
+
+            String[] header = {"Id", "Title", "Status"}; // Заголовки столбцов
+            writer.writeNext(header);
+
+            for (LotDTO lotDTO : lotDTOs) {
+                String[] data = {String.valueOf(lotDTO.getId()), lotDTO.getTitle(), lotDTO.getStatus().toString()};
+                writer.writeNext(data);
+            }
+
+            writer.flush();
+            return outputStream.toByteArray();
+
+        } catch (IOException e) {
+            // Обработка исключения, если что-то пошло не так при создании CSV файла
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private List<LotDTO> getAllLotsAsDTO() {
+        return null;
     }
 
     @Override
@@ -184,12 +213,17 @@ public class LotServiceImpl implements LotService {
 
     @Override
     public FullLot getFullInformation(Long lotId) {
-        throw new UnsupportedOperationException("Getting full information by lot ID is not supported yet");
+        return getFullLotById(lotId);
     }
 
     @Override
     public Bid getMostFrequentBidder(Long lotId) {
-        throw new UnsupportedOperationException("Getting most frequent bidder is not supported yet");
+        List<Bid> bids = bidRepository.findByLotIdOrderByBidDateDesc(lotId);
+        if (bids.isEmpty()) {
+            throw new NotFoundException("Bids not found for the lot");
+        }
+
+        return bids.get(0);
     }
 
     @Override
@@ -221,3 +255,4 @@ public class LotServiceImpl implements LotService {
         return true;
     }
 }
+

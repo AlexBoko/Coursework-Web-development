@@ -17,7 +17,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/lots")
+@RequestMapping("/lot")
 public class LotController {
     private final LotService lotService;
 
@@ -66,8 +66,6 @@ public class LotController {
         }
     }
 
-
-
     @GetMapping
     public ResponseEntity<List<LotDTO>> getAllLotsByStatusFilterAndPageNumber(
             @RequestParam(value = "status", required = false) String status,
@@ -103,6 +101,16 @@ public class LotController {
     public ResponseEntity<Lot> createLot(@RequestBody @Valid CreateLot createLot) {
         Lot lot = lotService.createLot(createLot);
         return ResponseEntity.ok(lot);
+    }
+
+    @PostMapping("/{id}/bid")
+    public ResponseEntity<Void> createBid(@PathVariable("id") Long lotId, @RequestBody @Valid CreateBid createBid) {
+        boolean created = lotService.createBid(lotId, createBid.getBidderName(), createBid.getAmount());
+        if (created) {
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @DeleteMapping("/{id}")

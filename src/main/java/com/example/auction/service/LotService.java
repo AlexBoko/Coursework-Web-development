@@ -50,3 +50,4 @@ public interface LotService {
 
     boolean createBid(Long lotId, String bidderName, BigDecimal amount);
 }
+

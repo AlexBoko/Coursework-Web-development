@@ -12,3 +12,4 @@ public interface LotRepository extends JpaRepository<Lot, Long> {
     List<Lot> findByStatus(String status, Pageable pageable);
 }
 
+

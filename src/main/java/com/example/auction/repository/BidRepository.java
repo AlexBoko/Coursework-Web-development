@@ -26,5 +26,7 @@ public interface BidRepository extends JpaRepository<Bid, Long> {
     List<Bid> findByLotId(Long lotId);
 
     List<Bid> findByLotIdOrderByBidDateDesc(Integer id);
+
+    List<Bid> findByLotIdOrderByBidDateAsc(Long id);
 }
 
