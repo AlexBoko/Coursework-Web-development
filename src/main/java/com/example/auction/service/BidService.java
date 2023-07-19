@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
@@ -106,8 +105,7 @@ public class BidService {
                 BigDecimal.valueOf(lot.getBids().size()).multiply(lot.getBidPrice())
         );
 
-
-        BigDecimal bidAmount = new BigDecimal((BigInteger) bidDTO.getAmount());
+        BigDecimal bidAmount = bidDTO.getAmount();
         if (bidAmount.compareTo(currentPrice) <= 0) {
             throw new IllegalArgumentException("Bid amount must be greater than the current price");
         }
@@ -118,6 +116,12 @@ public class BidService {
         bid.setAmount(bidAmount);
         bid.setLot(lot);
 
-        bidRepository.save(bid);
+        try {
+            bidRepository.save(bid);
+        } catch (Exception e) {
+            // Обработка исключения, если что-то пошло не так при сохранении ставки
+            e.printStackTrace();
+            throw new RuntimeException("Failed to place the bet. Please try again later.");
+        }
     }
 }

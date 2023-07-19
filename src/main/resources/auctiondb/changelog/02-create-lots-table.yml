@@ -1,6 +1,6 @@
 databaseChangeLog:
   - changeSet:
-      id: 02-create-lots-table.yml
+      id: 02-create-lots-table
       author: Alexandr
       changes:
         - createTable:
@@ -24,12 +24,12 @@ databaseChangeLog:
                     nullable: false
               - column:
                   name: start_price
-                  type: integer
+                  type: numeric(19, 2)   # Изменен тип данных на numeric(19, 2)
                   constraints:
                     nullable: false
               - column:
                   name: bid_price
-                  type: integer
+                  type: numeric(19, 2)   # Может быть decimal или numeric в зависимости от базы данных
                   constraints:
                     nullable: false
               - column:
@@ -47,5 +47,9 @@ databaseChangeLog:
                   type: bigint
                   constraints:
                     nullable: true
-
-
+        - addForeignKeyConstraint:
+            baseTableName: lots
+            baseColumnNames: bid_id
+            referencedTableName: bids
+            referencedColumnNames: id
+            constraintName: fk_lots_bid_id

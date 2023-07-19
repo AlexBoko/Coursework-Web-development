@@ -1,15 +1,19 @@
 package com.example.auction.model;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Collection;
 
 @Entity
-@Table(name = "lot")
+@Table(name = "lots")
 public class Lot {
+    @OneToMany(mappedBy = "lot", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Collection<Bid> bids;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Long id;
+        private Long id;
     @Column(name = "title")
     private String title;
     @Column(name = "description")
@@ -21,8 +25,7 @@ public class Lot {
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private Status status;
-    @Column(name = "bidder_id")
-    private Long bidderId;
+
     public Lot() {
     }
     // Геттеры и сеттеры для полей класса
@@ -62,14 +65,8 @@ public class Lot {
     public void setStatus(Status status) {
         this.status = status;
     }
-    public Long getBidderId() {
-        return bidderId;
-    }
-    public void setBidderId(Long bidderId) {
-        this.bidderId = bidderId;
-    }
 
-    public Collection<Object> getBids() {
-        return null;
+    public Collection<Bid> getBids() {
+        return bids != null ? bids : new ArrayList<>();
     }
 }

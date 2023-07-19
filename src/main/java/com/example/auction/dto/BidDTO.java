@@ -1,5 +1,6 @@
 package com.example.auction.dto;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 public class BidDTO {
@@ -30,8 +31,8 @@ public class BidDTO {
         this.bidDate = bidDate;
     }
 
-    public Object getAmount() {
-        return amount;
+    public BigDecimal getAmount() {
+        return (BigDecimal) amount;
     }
 
     public void setAmount(Object amount) {

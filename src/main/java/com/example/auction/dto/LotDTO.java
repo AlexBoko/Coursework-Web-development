@@ -16,9 +16,6 @@ public class LotDTO {
     private BigDecimal currentPrice;
 
     public LotDTO(Long id, String title, Status status) {
-    }
-
-    public LotDTO(Long id, String title, String description, BigDecimal startPrice, Status status) {
         this.id = id;
         this.title = title;
         this.description = description;

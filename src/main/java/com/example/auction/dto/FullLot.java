@@ -12,7 +12,7 @@ public class FullLot extends LotDTO {
 
     public FullLot(Long id, String title, String description, BigDecimal startPrice, Status status,
                    List<BidDTO> bids, BigDecimal currentPrice) {
-        super(Long.valueOf(id), title, description, startPrice, status);
+        super(Long.valueOf(id), title, status);
         this.bids = bids;
         this.currentPrice = currentPrice;
     }
