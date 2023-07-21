@@ -1,10 +1,10 @@
 databaseChangeLog:
   - changeSet:
-      id: 02-create-lots-table
+      id: 01-create-bids-table.yml
       author: Alexandr
       changes:
         - createTable:
-            tableName: lots
+            tableName: bids
             columns:
               - column:
                   name: id
@@ -13,37 +13,27 @@ databaseChangeLog:
                   constraints:
                     primaryKey: true
               - column:
-                  name: title
-                  type: varchar(64)
-                  constraints:
-                    nullable: false
-              - column:
-                  name: description
-                  type: varchar(4096)
-                  constraints:
-                    nullable: false
-              - column:
-                  name: start_price
-                  type: integer
-                  constraints:
-                    nullable: false
-              - column:
-                  name: bid_price
-                  type: numeric(19, 2)   # Изменен тип данных на numeric(19, 2)
-                  constraints:
-                    nullable: false
-              - column:
-                  name: status
-                  type: varchar(255)
-                  constraints:
-                    nullable: false
-              - column:
-                  name: category
-                  type: varchar(255)
-                  constraints:
-                    nullable: true
-              - column:
-                  name: bid_id
+                  name: lot_id
                   type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: bidder_name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: amount
+                  type: numeric(19, 2)
+                  constraints:
+                    nullable: false
+              - column:  # Новое поле bidDate
+                  name: bidDate
+                  type: timestamp
                   constraints:
                     nullable: true
